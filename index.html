@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday Hamza 🎉</title>
+
+<style>
+/* --------------------
+   Base / Mobile First
+-------------------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-x: hidden;
+}
+
+/* --------------------
+   Hero Section
+-------------------- */
+.hero {
+  text-align: center;
+  padding: 4rem 1.5rem;
+}
+
+.hero h1 {
+  font-size: 2.2rem;
+  animation: fadeIn 1.5s ease forwards;
+}
+
+.hero h2 {
+  font-size: 2.8rem;
+  color: #ffd369;
+  margin: 0.5rem 0 1rem;
+  animation: slideUp 1.2s ease forwards;
+}
+
+.hero p {
+  font-size: 1rem;
+  opacity: 0;
+  animation: fadeIn 1.5s ease forwards;
+  animation-delay: 0.8s;
+}
+
+/* Button */
+button {
+  margin-top: 2rem;
+  padding: 0.8rem 1.6rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 30px;
+  background: #ffd369;
+  color: #1a1a1a;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+}
+
+/* --------------------
+   Card
+-------------------- */
+.card {
+  background: rgba(255,255,255,0.1);
+  margin: 2rem 1.5rem;
+  padding: 2rem;
+  border-radius: 16px;
+  text-align: center;
+  max-width: 500px;
+  backdrop-filter: blur(10px);
+  display: none;
+  animation: popIn 0.8s ease forwards;
+}
+
+/* --------------------
+   Balloons
+-------------------- */
+.balloons {
+  position: fixed;
+  bottom: -100px;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  pointer-events: none;
+  z-index: 50;
+}
+
+.balloons span {
+  font-size: 2.5rem;
+  opacity: 0;
+  animation: floatUp 4s ease-in-out forwards;
+}
+
+.balloons.active span {
+  opacity: 1;
+}
+
+.balloons span:nth-child(1) { animation-delay: 0s; }
+.balloons span:nth-child(2) { animation-delay: 0.5s; }
+.balloons span:nth-child(3) { animation-delay: 1s; }
+.balloons span:nth-child(4) { animation-delay: 1.5s; }
+
+/* --------------------
+   Confetti Canvas
+-------------------- */
+#confetti {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 100;
+}
+
+/* --------------------
+   Glow Effect
+-------------------- */
+body.celebrate {
+  animation: glow 1.5s ease-in-out infinite alternate;
+}
+
+/* --------------------
+   Footer
+-------------------- */
+footer {
+  margin-top: auto;
+  padding: 1rem;
+  font-size: 0.85rem;
+  opacity: 0.7;
+}
+
+/* --------------------
+   Animations
+-------------------- */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes popIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes floatUp {
+  from { transform: translateY(0); }
+  to { transform: translateY(-110vh); }
+}
+
+@keyframes glow {
+  from {
+    box-shadow: inset 0 0 40px rgba(255, 211, 105, 0.2);
+  }
+  to {
+    box-shadow: inset 0 0 80px rgba(255, 211, 105, 0.5);
+  }
+}
+
+/* --------------------
+   Desktop
+-------------------- */
+@media (min-width: 768px) {
+  .hero h1 { font-size: 3rem; }
+  .hero h2 { font-size: 4rem; }
+  .hero p  { font-size: 1.1rem; }
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="confetti"></canvas>
+
+<div class="hero">
+  <h1>Happy Birthday</h1>
+  <h2>Hamza 🎂</h2>
+  <p>Wishing you a year full of success, happiness, and big wins.</p>
+  <button id="celebrateBtn">Celebrate 🎉</button>
+</div>
+
+<section class="card" id="card">
+  <h3>🎁 A Special Day</h3>
+  <p>
+    Today is all about you, Hamza.  
+    Keep dreaming big and building amazing things.
+  </p>
+</section>
+
+<div class="balloons" id="balloons">
+  <span>🎈</span>
+  <span>🎈</span>
+  <span>🎈</span>
+  <span>🎈</span>
+</div>
+
+<footer>
+  Made with ❤️ just for Hamza
+</footer>
+
+<script>
+const button = document.getElementById("celebrateBtn");
+const card = document.getElementById("card");
+const balloons = document.getElementById("balloons");
+
+const canvas = document.getElementById("confetti");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let confetti = [];
+let animationId;
+
+function createConfetti() {
+  for (let i = 0; i < 150; i++) {
+    confetti.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height - canvas.height,
+      r: Math.random() * 6 + 2,
+      speed: Math.random() * 3 + 2,
+      color: `hsl(${Math.random() * 360}, 100%, 60%)`
+    });
+  }
+}
+
+function drawConfetti() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  confetti.forEach(c => {
+    ctx.beginPath();
+    ctx.arc(c.x, c.y, c.r, 0, Math.PI * 2);
+    ctx.fillStyle = c.color;
+    ctx.fill();
+
+    c.y += c.speed;
+    if (c.y > canvas.height) {
+      c.y = -10;
+    }
+  });
+
+  animationId = requestAnimationFrame(drawConfetti);
+}
+
+button.addEventListener("click", () => {
+  card.style.display = "block";
+  balloons.classList.add("active");
+  document.body.classList.add("celebrate");
+
+  createConfetti();
+  drawConfetti();
+
+  button.textContent = "🎉 Enjoy Your Day Hamza!";
+  button.disabled = true;
+});
+</script>
+
+</body>
+</html>
